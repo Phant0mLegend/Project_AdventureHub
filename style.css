@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  padding: 10px;
+  background: #4a7c59;
+  color: white;
+}
+
+#map {
+  height: 70vh;
+  width: 90%;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+input, button {
+  display: block;
+  margin: 10px auto;
+  padding: 8px;
+}
