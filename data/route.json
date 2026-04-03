@@ -1,0 +1,18 @@
+[
+  {
+    "lat": 55.7558,
+    "lng": 37.6176,
+    "name": "Красная площадь",
+    "description": "Центр Москвы, одно из самых известных мест России.",
+    "image": "images/krasnaya.jpg",
+    "video": "https://www.youtube.com/embed/VIDEO_ID"
+  },
+  {
+    "lat": 55.7404,
+    "lng": 37.6109,
+    "name": "Храм Василия Блаженного",
+    "description": "Яркий собор с уникальной архитектурой.",
+    "image": "images/vasiliy.jpg",
+    "video": "https://www.youtube.com/embed/ANOTHER_ID"
+  }
+]
