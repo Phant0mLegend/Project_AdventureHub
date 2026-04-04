@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Маршрут по Хибинам</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="map-page">
+  <header>
+    <div class="container">
+      <a href="index.html" class="back-link">← Назад на главную</a>
+      <h1>🗺️ Мой маршрут по Хибинам</h1>
+    </div>
+  </header>
+
+  <main>
+    <div class="controls">
+      <label>Подложка:</label>
+      <button onclick="setBaseLayer('openstreetmap')">OSM</button>
+      <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
+      <button onclick="setBaseLayer('yandexMap')">Яндекс</button>
+      <button onclick="setBaseLayer('yandexSatellite')">Яндекс Спутник</button>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="actions">
+      <input type="file" id="import-file" accept=".gpx" />
+      <button onclick="importRoute()">Импортировать GPX</button>
+      <a href="data/route.gpx" download class="btn-small">Скачать маршрут</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      &copy; 2026 | Данные: nakarte.me
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
