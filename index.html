@@ -9,31 +9,26 @@
 <body>
   <h1>🏔️ Мой туристический маршрут по Хибинам</h1>
 
-  <!-- Кнопки выбора подложки -->
   <div class="controls">
-    <label>Подложка карты: </label>
+    <label>Подложка: </label>
     <button onclick="setBaseLayer('openstreetmap')">OSM</button>
     <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
     <button onclick="setBaseLayer('yandexMap')">Яндекс.Карта</button>
     <button onclick="setBaseLayer('yandexSatellite')">Яндекс.Спутник</button>
   </div>
 
-  <!-- Карта -->
   <div id="map"></div>
 
-  <!-- Импорт маршрута -->
-  <input type="file" id="import-file" accept=".json" />
-  <button onclick="importRoute()">Импортировать маршрут</button>
+  <input type="file" id="import-file" accept=".gpx" />
+  <button onclick="importRoute()">Импортировать GPX</button>
 
-  <!-- Ссылки -->
   <p style="text-align: center; margin-top: 10px;">
-    <a href="data/route.kml" download>📥 Скачать маршрут для Google Earth</a> |
+    <a href="data/route.gpx" download>📥 Скачать маршрут (.gpx)</a> |
     <a href="https://nakarte.me/#m=11/67.75355/33.53954&l=Co/B&nktl=tU0pjtmge4bE8EV8Ae8N3A" target="_blank">
-      Посмотреть на nakarte.me
+      Смотреть на nakarte.me
     </a>
   </p>
 
-  <!-- Подключаем Leaflet и скрипт -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
