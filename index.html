@@ -2,34 +2,64 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Мой маршрут по Хибинам</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AdventureHub | Хибины</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-  <h1>🏔️ Мой туристический маршрут по Хибинам</h1>
+<body class="home">
+  <header>
+    <div class="container">
+      <h1>🏔️ AdventureHub</h1>
+      <p>Мой путь по Хибинам — июль 2026</p>
+    </div>
+  </header>
 
-  <div class="controls">
-    <label>Подложка: </label>
-    <button onclick="setBaseLayer('openstreetmap')">OSM</button>
-    <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
-    <button onclick="setBaseLayer('yandexMap')">Яндекс.Карта</button>
-    <button onclick="setBaseLayer('yandexSatellite')">Яндекс.Спутник</button>
-  </div>
+  <main>
+    <section class="hero">
+      <img src="images/hero.jpg" alt="Хибины — закат над горами" />
+      <div class="overlay">
+        <h2>Путешествие в сердце Кольского нагорья</h2>
+        <a href="route.html" class="btn">Открыть маршрут</a>
+      </div>
+    </section>
 
-  <div id="map"></div>
+    <section class="about">
+      <div class="container">
+        <h2>О походе</h2>
+        <p>
+          В июле 2026 года я совершил 8-дневный поход по Хибинам — одному из самых красивых мест России.
+          Маршрут проходил через горы Чипчастый, Актру, перевалы и озёра. 
+          Я начал путь у подножия Чипчастого, затем прошёл к озеру Белое, перевалу Красное озеро и вернулся через Кировск.
+        </p>
+        <p>
+          На этой странице — интерактивная карта моего маршрута, дневники дней, фото и видео.
+        </p>
+      </div>
+    </section>
 
-  <input type="file" id="import-file" accept=".gpx" />
-  <button onclick="importRoute()">Импортировать GPX</button>
+    <section class="features">
+      <div class="container">
+        <div class="card">
+          <h3>📍 Интерактивная карта</h3>
+          <p>Следи за каждым шагом маршрута. Переключай подложки: OSM, Google, Яндекс.</p>
+        </div>
+        <div class="card">
+          <h3>📅 Дни пути</h3>
+          <p>Каждая точка — начало или конец дня. Узнай, где я ночевал.</p>
+        </div>
+        <div class="card">
+          <h3>📷 Фото и видео</h3>
+          <p>Полный визуальный дневник похода — прямо на карте.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  <p style="text-align: center; margin-top: 10px;">
-    <a href="data/route.gpx" download>📥 Скачать маршрут (.gpx)</a> |
-    <a href="https://nakarte.me/#m=11/67.75355/33.53954&l=Co/B&nktl=tU0pjtmge4bE8EV8Ae8N3A" target="_blank">
-      Смотреть на nakarte.me
-    </a>
-  </p>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="script.js"></script>
+  <footer>
+    <div class="container">
+      &copy; 2026 Phant0mLegend | Создано с ❤️ для исследования природы
+    </div>
+  </footer>
 </body>
 </html>
