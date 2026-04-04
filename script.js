@@ -1,28 +1,20 @@
-// Глобальные переменные
 let map;
 let currentLayer;
 
-// Объект с разными подложками карт
+// Подложки карт
 const layers = {
-  // 1. OpenStreetMap (стандарт)
   openstreetmap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; OpenStreetMap contributors'
   }),
-
-  // 2. Google Спутник (через косвенный URL)
   googleSatellite: L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
     attribution: 'Google Satellite',
     maxZoom: 19
   }),
-
-  // 3. Яндекс.Карта (схема)
   yandexMap: L.tileLayer('https://vec0{s}.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&lang=ru_RU', {
     subdomains: ['1', '2', '3', '4'],
     attribution: 'Данные &copy; <a href="https://yandex.ru">Яндекс</a>',
     maxZoom: 19
   }),
-
-  // 4. Яндекс.Спутник
   yandexSatellite: L.tileLayer('https://sat0{s}.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}&lang=ru_RU', {
     subdomains: ['1', '2', '3', '4'],
     attribution: 'Снимки &copy; <a href="https://yandex.ru">Яндекс</a>',
@@ -30,89 +22,95 @@ const layers = {
   })
 };
 
-// Инициализация карты
 function initMap() {
-  // Начальная точка — Хибины
-  map = L.map('map').setView([67.75355, 33.53954], 11);
-
-  // Добавляем слой OSM по умолчанию
+  map = L.map('map').setView([67.75355, 33.53954], 10);
   currentLayer = layers.openstreetmap;
   currentLayer.addTo(map);
 }
 
-// Функция смены подложки
 function setBaseLayer(key) {
-  const newLayer = layers[key];
-
-  // Если такой слой существует — меняем
-  if (newLayer) {
-    if (currentLayer) {
-      map.removeLayer(currentLayer);
-    }
-    currentLayer = newLayer;
-    currentLayer.addTo(map);
-  } else {
-    console.error("Слой не найден:", key);
-  }
+  if (currentLayer) map.removeLayer(currentLayer);
+  currentLayer = layers[key];
+  currentLayer.addTo(map);
 }
 
-// Загрузка точек маршрута из JSON
+// === ЗАГРУЗКА GPX-ТРЕКА ===
 async function loadRoute(fileUrl) {
   try {
     const response = await fetch(fileUrl);
-    const points = await response.json();
-    addPointsToMap(points);
+    const text = await response.text();
+    parseGPX(text);
   } catch (e) {
     alert("Ошибка загрузки маршрута: " + e.message);
   }
 }
 
-// Добавление точек на карту
-function addPointsToMap(points) {
-  // Удаляем старые метки
-  map.eachLayer((layer) => {
-    if (layer instanceof L.Marker) {
-      map.removeLayer(layer);
+function parseGPX(gpxText) {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(gpxText, "text/xml");
+
+  // === Линия маршрута ===
+  const trackSegments = xmlDoc.querySelectorAll("trk > trkseg");
+  const routePoints = [];
+
+  trackSegments.forEach(seg => {
+    const points = seg.querySelectorAll("trkpt");
+    const segmentLine = [];
+    points.forEach(pt => {
+      const lat = parseFloat(pt.getAttribute("lat"));
+      const lon = parseFloat(pt.getAttribute("lon"));
+      segmentLine.push([lat, lon]);
+    });
+    if (segmentLine.length > 0) {
+      routePoints.push(segmentLine);
     }
   });
 
-  // Добавляем новые
-  points.forEach(point => {
-    const popupContent = `
-      <h3 style="margin:0">${point.name}</h3>
-      <p style="margin:8px 0">${point.description}</p>
-      ${point.image ? `<img src="${point.image}" width="250" style="border-radius:8px">` : ''}
-      ${point.video ? `<br><iframe width="250" height="150" src="${point.video}" frameborder="0" allowfullscreen></iframe>` : ''}
-    `;
-    L.marker([point.lat, point.lng])
-      .addTo(map)
-      .bindPopup(popupContent);
+  // Рисуем маршрут
+  routePoints.forEach(line => {
+    L.polyline(line, {
+      color: '#FF5722',
+      weight: 5,
+      opacity: 0.8,
+      dashArray: '10, 10'
+    }).addTo(map);
+  });
+
+  // === Точки дней ===
+  const waypoints = xmlDoc.querySelectorAll("wpt");
+  waypoints.forEach(wpt => {
+    const lat = parseFloat(wpt.getAttribute("lat"));
+    const lon = parseFloat(wpt.getAttribute("lon"));
+    const name = wpt.querySelector("name").textContent;
+
+    L.marker([lat, lon], {
+      title: name
+    }).addTo(map).bindPopup(`
+      <b>📅 ${name}</b><br>
+      Начало или конец дня.
+    `);
   });
 }
 
-// Импорт маршрута с компьютера
+// Импорт маршрута
 function importRoute() {
   const fileInput = document.getElementById('import-file');
   const file = fileInput.files[0];
   if (!file) {
-    alert("Выберите файл маршрута (.json)");
+    alert("Выберите файл маршрута (.gpx)");
     return;
   }
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    try {
-      const points = JSON.parse(e.target.result);
-      addPointsToMap(points);
-    } catch (err) {
-      alert("Ошибка: неверный формат JSON");
-    }
+    parseGPX(e.target.result);
   };
   reader.readAsText(file);
 }
 
-// Запуск при загрузке страницы
+// Запуск
 window.addEventListener('load', () => {
-  initMap(); // Создаём карту
-  loadRoute('data/route.json'); // Загружаем маршрут
+  initMap();
+  // Загружаем GPX с сервера (если он лежит в папке data)
+  loadRoute('data/route.gpx');
 });
