@@ -2,17 +2,38 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Туристический маршрут</title>
+  <title>Мой маршрут по Хибинам</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Мой туристический маршрут</h1>
+  <h1>🏔️ Мой туристический маршрут по Хибинам</h1>
+
+  <!-- Кнопки выбора подложки -->
+  <div class="controls">
+    <label>Подложка карты: </label>
+    <button onclick="setBaseLayer('openstreetmap')">OSM</button>
+    <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
+    <button onclick="setBaseLayer('yandexMap')">Яндекс.Карта</button>
+    <button onclick="setBaseLayer('yandexSatellite')">Яндекс.Спутник</button>
+  </div>
+
+  <!-- Карта -->
   <div id="map"></div>
 
+  <!-- Импорт маршрута -->
   <input type="file" id="import-file" accept=".json" />
   <button onclick="importRoute()">Импортировать маршрут</button>
 
+  <!-- Ссылки -->
+  <p style="text-align: center; margin-top: 10px;">
+    <a href="data/route.kml" download>📥 Скачать маршрут для Google Earth</a> |
+    <a href="https://nakarte.me/#m=11/67.75355/33.53954&l=Co/B&nktl=tU0pjtmge4bE8EV8Ae8N3A" target="_blank">
+      Посмотреть на nakarte.me
+    </a>
+  </p>
+
+  <!-- Подключаем Leaflet и скрипт -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
