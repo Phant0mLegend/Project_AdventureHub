@@ -5,7 +5,7 @@ let overlayLayers = {};
 
 // === СЛОИ КАРТЫ ===
 const layers = {
-  // Основные
+  // Основные подложки
   openstreetmap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OSM'
   }),
@@ -22,7 +22,7 @@ const layers = {
     attribution: 'Яндекс'
   }),
 
-  // Strava
+  // Strava Heatmap
   strava: L.tileLayer('https://tiles.stadiamaps.com/tiles/strava_segment/{z}/{x}/{y}{r}.png', {
     maxZoom: 18,
     attribution: '© <a href="https://www.strava.com">Strava</a>'
@@ -34,7 +34,7 @@ const layers = {
     attribution: '© <a href="https://opentopomap.org">OpenTopoMap</a>'
   }),
 
-  // Геология (пример)
+  // Геология (пример) — можно заменить на настоящую карту
   geology: L.tileLayer('https://api.maptiler.com/maps/geology/{z}/{x}/{y}.png?key=YOUR_KEY_HERE', {
     maxZoom: 12,
     attribution: 'Geology © <a href="https://maptiler.com">MapTiler</a>'
@@ -62,6 +62,18 @@ function initMap() {
   Object.keys(layers).forEach(key => {
     overlayLayers[key] = false;
   });
+
+  // Меню слоёв — теперь работает
+  const btn = document.getElementById('layers-btn');
+  const panel = document.getElementById('layers-panel');
+  if (btn && panel) {
+    btn.addEventListener('click', () => {
+      panel.classList.toggle('active');
+    });
+  }
+
+  // Загружаем сегменты после инициализации карты
+  loadSegments();
 }
 
 // Смена основного слоя
@@ -88,10 +100,10 @@ function toggleOverlay(key, show) {
   }
 }
 
-// Загрузка GPX
-async function loadGPX() {
+// === СЕГМЕНТЫ ПО ДНЯМ (из GPX) ===
+async function loadSegment(day, file, color, name) {
   try {
-    const res = await fetch('data/route.gpx');
+    const res = await fetch(`data/day${day}.gpx`);
     const text = await res.text();
     const parser = new DOMParser();
     const xml = parser.parseFromString(text, 'text/xml');
@@ -106,49 +118,25 @@ async function loadGPX() {
     });
 
     if (points.length > 0) {
-      L.polyline(points, { color: '#999', weight: 3, opacity: 0.5 }).addTo(map);
+      // Линия маршрута
+      L.polyline(points, { color, weight: 5, opacity: 0.8 }).addTo(map).bindPopup(`<b>День ${day}</b>`);
+
+      // Точки: старт и финиш
+      L.marker(points[0]).addTo(map).bindPopup(`<b>День ${day} старт</b>`);
+      L.marker(points[points.length - 1]).addTo(map).bindPopup(`<b>День ${day} финиш</b>`);
     }
   } catch (e) {
-    console.warn("GPX не загружен:", e.message);
+    console.warn(`Day ${day} не загружен:`, e.message);
   }
 }
 
-// === СЕГМЕНТЫ МАРШРУТА ===
-// ⚠️ ЗАМЕНИ КООРДИНАТЫ НА СВОИ!
+// Загрузка всех сегментов
 function loadSegments() {
-  const colors = ['#FF5722', '#2196F3', '#4CAF50', '#9C27B0', '#FF9800', '#00BCD4', '#E91E63'];
-  const segmentNames = [
-    'День 1: Старт — редколесье',
-    'День 2: Ущелье Аку-Аку',
-    'День 3: Водопад Рисйок',
-    'День 4: Перевал Чоргорр',
-    'День 5: Озеро Академическое',
-    'День 6: Тундра и цирки',
-    'День 7: Возвращение в Кировск'
-  ];
+  const colors = ['#FF5722', '#2196F3', '#4CAF50', '#9C27B0', '#FF9800', '#00BCD4', '#E91E63', '#795548', '#607D8B', '#3F51B5'];
 
-  // 🔽 ЗДЕСЬ ВСТАВЬ СВОИ КООРДИНАТЫ (lat, lon)
-  const segments = [
-    [[67.825174, 33.53954], [67.803094, 33.596129]], // День 1
-    [[67.803094, 33.596129], [67.744922, 33.726463]], // День 2
-    [[67.744922, 33.726463], [67.669799, 33.636834]]  // День 3
-    // ... добавь остальные
-  ];
-
-  segments.forEach((points, i) => {
-    if (points.length < 2) return;
-
-    // Линия
-    L.polyline(points, {
-      color: colors[i % colors.length],
-      weight: 5,
-      opacity: 0.8
-    }).addTo(map).bindPopup(`<b>${segmentNames[i]}</b>`);
-
-    // Точки
-    L.marker(points[0]).addTo(map).bindPopup(`<b>День ${i+1} старт</b>`);
-    L.marker(points[points.length - 1]).addTo(map).bindPopup(`<b>День ${i+1} финиш</b>`);
-  });
+  for (let i = 1; i <= 10; i++) {
+    loadSegment(i, `day${i}.gpx`, colors[(i - 1) % colors.length], `День ${i}`);
+  }
 }
 
 // Импорт GPX
@@ -180,12 +168,5 @@ function importRoute() {
 window.addEventListener('load', () => {
   if (document.getElementById('map')) {
     initMap();
-    loadGPX();
-    loadSegments(); // ← сегменты загружаются здесь
   }
-
-  // Меню слоёв
-  document.getElementById('layers-btn')?.addEventListener('click', () => {
-    document.getElementById('layers-panel').classList.toggle('active');
-  });
 });
