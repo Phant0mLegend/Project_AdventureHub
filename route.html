@@ -24,12 +24,22 @@
 
   <main>
     <div class="controls">
-      <label>Подложка:</label>
-      <button onclick="setBaseLayer('openstreetmap')">OSM</button>
-      <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
-      <button onclick="setBaseLayer('yandexMap')">Яндекс</button>
-      <button onclick="setBaseLayer('yandexSatellite')">Яндекс Спутник</button>
-    </div>
+  <button id="layers-btn">🔧 Меню выбора слоёв</button>
+  <div id="layers-panel" class="layers-panel">
+    <h4>Основные подложки</h4>
+    <button onclick="setBaseLayer('openstreetmap')">OSM</button>
+    <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
+    <button onclick="setBaseLayer('yandexMap')">Яндекс.Карта</button>
+    <button onclick="setBaseLayer('yandexSatellite')">Яндекс.Спутник</button>
+
+    <h4>Слои поверх</h4>
+    <label><input type="checkbox" onchange="toggleOverlay('strava', this.checked)"> Strava Heatmap</label>
+    <label><input type="checkbox" onchange="toggleOverlay('topo250', this.checked)"> Топокарта 1:250k</label>
+    <label><input type="checkbox" onchange="toggleOverlay('geology', this.checked)"> Геологическая карта</label>
+    <label><input type="checkbox" onchange="toggleOverlay('dangerZones', this.checked)"> Опасные зоны</label>
+  </div>
+</div>
+
 
     <div id="map"></div>
 
