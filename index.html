@@ -3,132 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Хибины: Маршрут 120 км | AdventureHub</title>
+  <title>Хибины: Поход 120 км | AdventureHub</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="home">
   <header>
     <div class="container">
-      <h1>🏔️ Хибины: 120 км самостоятельного похода</h1>
-      <p>Практический гид для туристов. Повторите маршрут — безопасно и с удовольствием.</p>
+      <h1>🏔️ AdventureHub</h1>
+      <p>Мой путь по Хибинам — июль 2026</p>
     </div>
   </header>
 
   <main>
-    <!-- Карта -->
-    <section class="map-section">
-      <div class="container">
-        <h2>📍 Ваш маршрут</h2>
-        <div id="map"></div>
+    <section class="hero">
+      <img src="images/hero.jpg" alt="Хибины — закат над горами" />
+      <div class="overlay">
+        <h2>Путешествие в сердце Кольского нагорья</h2>
+        <a href="route.html" class="btn">Открыть маршрут</a>
+      </div>
+    </section>
 
-        <div class="controls">
-          <label>Подложка:</label>
-          <button onclick="setBaseLayer('openstreetmap')">OSM</button>
-          <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
-          <button onclick="setBaseLayer('yandexMap')">Яндекс</button>
-          <button onclick="setBaseLayer('yandexSatellite')">Яндекс Спутник</button>
+    <section class="about">
+      <div class="container">
+        <h2>О походе</h2>
+        <p>
+          В июле 2026 года я совершил 8-дневный поход по Хибинам — одному из самых красивых мест России.
+          Маршрут проходил через горы Чипчастый, Актру, перевалы и озёра.
+        </p>
+        <p>
+          На этой странице — интерактивная карта моего маршрута, дневники дней, фото и видео.
+        </p>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container">
+        <div class="card">
+          <h3>📍 Интерактивная карта</h3>
+          <p>Следи за каждым шагом маршрута. Переключай подложки: OSM, Google, Яндекс.</p>
         </div>
-
-        <div class="actions">
-          <input type="file" id="import-file" accept=".gpx,.kml" />
-          <button onclick="importRoute()">Импортировать GPX/KML</button>
+        <div class="card">
+          <h3>🎒 Полный гид</h3>
+          <p>Что взять, как подготовиться, где ставить лагерь.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- О маршруте -->
-    <section class="guide-info">
-      <div class="container">
-        <h2>📌 О маршруте</h2>
-        <ul>
-          <li><strong>Протяжённость:</strong> 120 км</li>
-          <li><strong>Сложность:</strong> высокая (опыт пеших походов обязателен)</li>
-          <li><strong>Сезон:</strong> июль – первая декада сентября</li>
-          <li><strong>Время прохождения:</strong> 7–9 дней</li>
-          <li><strong>Точка старта:</strong> Кировск, поворот на Актру</li>
-          <li><strong>Точка финиша:</strong> Кировск (замкнутый маршрут)</li>
-          <li><strong>Навигация:</strong> обязательно использовать GPS и GPX-трек</li>
-          <li><strong>Высота:</strong> от 200 м до 950 м над уровнем моря</li>
-          <li><strong>Рельеф:</strong> тундра, осыпи, ущелья, ручьи, скальные участки</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Рекомендации -->
-    <section class="guide-tips">
-      <div class="container">
-        <h2>⚠️ Важные рекомендации</h2>
-        <ul>
-          <li>Не ходите в одиночку — только группой.</li>
-          <li>Проверяйте погоду перед выходом. В Хибинах погода меняется быстро.</li>
-          <li>Возьмите запасную одежду и термос с горячим чаем.</li>
-          <li>Не разводите костры — в тундре это запрещено и опасно.</li>
-          <li>Уважайте природу: не мусорьте, не тревожьте животных.</li>
-          <li>Местные саамы считают эти места священными — ведите себя скромно.</li>
-          <li>Имейте при себе аптечку, спутниковый маяк (например, Garmin inReach).</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Снаряжение -->
-    <section class="guide-gear">
-      <div class="container">
-        <h2>🎒 Что взять с собой</h2>
-        <ul>
-          <li>Треккинговые ботинки (водонепроницаемые)</li>
-          <li>Лёгкая палатка или спальник-коврик (вес до 3 кг)</li>
-          <li>GPS-устройство или смартфон с офлайн-картами (OsmAnd, MAPS.ME)</li>
-          <li>Запас еды на 10 дней (сушёные продукты, энергетики)</li>
-          <li>Фильтр для воды (например, Sawyer Mini)</li>
-          <li>Треккинговые палки</li>
-          <li>Фонарь, Power Bank</li>
-          <li>Карта и компас (на всякий случай)</li>
-          <li>Дождевик и тёплая ветровка</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Файлы -->
-    <section class="guide-files">
-      <div class="container">
-        <h2>📥 Файлы для скачивания</h2>
-        <p>Чтобы повторить маршрут, скачайте и используйте эти файлы:</p>
-
-        <ul class="file-list">
-          <li>
-            <a href="data/route.gpx" download>
-              📥 route.gpx
-            </a>
-            <span>— трек маршрута (подходит для OsmAnd, Locus, Garmin)</span>
-          </li>
-          <li>
-            <a href="data/route.kml" download>
-              📥 route.kml
-            </a>
-            <span>— для Google Earth и других сервисов</span>
-          </li>
-          <li>
-            <a href="https://nakarte.me/#m=11/67.75355/33.53954&l=Co/B&nktl=tU0pjtmge4bE8EV8Ae8N3A" target="_blank">
-              🔗 Открыть в nakarte.me
-            </a>
-            <span>— интерактивная карта с треком</span>
-          </li>
-        </ul>
-
-        <p><small>💡 Совет: загрузите GPX в приложение <strong>OsmAnd</strong> — оно покажет ваше местоположение в реальном времени.</small></p>
+        <div class="card">
+          <h3>📥 Скачать трек</h3>
+          <p>GPX, KML, советы по навигации.</p>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      &copy; 2026 Phant0mLegend | Цель проекта — развитие туризма в Хибинах
+      &copy; 2026 Phant0mLegend | Создано с ❤️ для исследования природы
     </div>
   </footer>
-
-  <!-- Leaflet -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>
