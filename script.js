@@ -4,31 +4,64 @@ let currentLayer;
 
 // Исправленные подложки
 const layers = {
-  // OpenStreetMap — работает всегда
+  // --- ОСНОВНЫЕ ПОДЛОЖКИ ---
   openstreetmap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; OSM'
   }),
 
-  // Google Спутник — стабильный URL
-  googleSatellite: L.tileLayer('http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}', {
+  googleSatellite: L.tileLayer('http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     maxZoom: 19,
-    attribution: 'Google Satellite'
+    attribution: 'Google'
   }),
 
-  // Яндекс.Карта
   yandexMap: L.tileLayer('https://vec0{s}.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&lang=ru_RU', {
-    subdomains: ['1', '2', '3', '4'],
-    maxZoom: 19,
-    attribution: 'Данные &copy; <a href="https://yandex.ru">Яндекс</a>'
+    subdomains: ['1','2','3','4'],
+    attribution: 'Яндекс'
   }),
 
-  // Яндекс.Спутник
   yandexSatellite: L.tileLayer('https://sat0{s}.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}&lang=ru_RU', {
-    subdomains: ['1', '2', '3', '4'],
-    maxZoom: 19,
-    attribution: 'Снимки &copy; <a href="https://yandex.ru">Яндекс</a>'
+    subdomains: ['1','2','3','4'],
+    attribution: 'Яндекс'
+  }),
+
+  // --- STRAVA HEATMAP ---
+  strava: L.tileLayer('https://tiles.stadiamaps.com/tiles/strava_segment/{z}/{x}/{y}{r}.png', {
+    maxZoom: 18,
+    attribution: '© <a href="https://www.strava.com">Strava</a>'
+  }),
+
+  // --- СОВЕТСКИЕ ТОПОКАРТЫ (OpenTopoMap + российские аналоги) ---
+  topo250: L.tileLayer('https://opentopomap.org/{z}/{x}/{y}.png', {
+    maxZoom: 17,
+    attribution: '© <a href="https://opentopomap.org">OpenTopoMap</a>'
+  }),
+
+  // Для 1:500k и 1:1M — используем единый стиль (подходит под "советские")
+  topo500: L.tileLayer('https://tile.nextzen.org/tilezen/vector/v1/512/all/{z}/{x}/{y}.topo.json', {
+    format: 'topojson',
+    maxZoom: 14,
+    style: () => ({ color: '#555' }),
+    attribution: 'Nextzen'
+  }),
+
+  // --- ГЕОЛОГИЧЕСКИЙ СЛОН ---
+  geology: L.tileLayer('https://gscloud.ru/api/maps/geology/{z}/{x}/{y}.png', {
+    maxZoom: 12,
+    attribution: 'Геологическая карта © <a href="https://gscloud.ru">ГСК</a>'
+  }),
+
+  // --- ОПАСНЫЕ ЗОНЫ (лавины, обвалы) — условный слой (можно заменить на GeoJSON)
+  dangerZones: L.geoJSON(null, {
+    style: {
+      color: '#ff3300',
+      weight: 2,
+      opacity: 0.7,
+      fillColor: '#ff6600',
+      fillOpacity: 0.3
+    }
   })
 };
+
 
 // Инициализация карты
 function initMap() {
