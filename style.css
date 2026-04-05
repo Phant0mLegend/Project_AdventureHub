@@ -128,19 +128,20 @@ header p {
   justify-content: center;
 }
 
-/* Карта */
+/* Карта — только на route.html */
 .map-page #map {
   height: 75vh;
   width: 90%;
   margin: 20px auto;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   border: 1px solid #33475c;
+  overflow: hidden;
 }
 
 .controls {
   text-align: center;
-  margin: 15px;
+  margin: 15px 0;
 }
 .controls button {
   margin: 0 8px;
@@ -168,50 +169,26 @@ header p {
   padding: 6px 12px;
 }
 
-/* Подвал */
-footer {
-  text-align: center;
-  padding: 30px 0;
-  background: #0a1018;
-  border-top: 1px solid #33475c;
-  margin-top: 40px;
+/* Блоки на route.html */
+.guide-info ul,
+.guide-tips ul,
+.guide-gear ul {
+  list-style: none;
+  padding-left: 20px;
 }
-
-/* Секции */
-.map-section, .guide-info, .guide-tips, .guide-gear, .guide-files {
-  padding: 40px 0;
+.guide-info li,
+.guide-tips li,
+.guide-gear li {
+  margin: 10px 0;
+  line-height: 1.6;
 }
-
-#map {
-  height: 500px;
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-  border: 1px solid #33475c;
-  margin: 20px 0;
-}
-
-.controls {
-  text-align: center;
-  margin: 15px 0;
-}
-.controls button {
-  margin: 0 8px;
-  padding: 8px 16px;
-  background: #1a2a3a;
-  color: #80deea;
-  border: 1px solid #4fc3f7;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.controls button:hover {
-  background: #4fc3f7;
-  color: #0f1620;
-}
-
-.actions {
-  text-align: center;
-  margin: 15px 0;
+.guide-info li::before,
+.guide-tips li::before,
+.guide-gear li::before {
+  content: "•";
+  color: #4fc3f7;
+  font-weight: bold;
+  margin-right: 8px;
 }
 
 .file-list a {
@@ -231,6 +208,14 @@ footer {
   border-left: 4px solid #4fc3f7;
 }
 
+/* Подвал */
+footer {
+  text-align: center;
+  padding: 30px 0;
+  background: #0a1018;
+  border-top: 1px solid #33475c;
+  margin-top: 40px;
+}
 
 /* Адаптивность */
 @media (max-width: 768px) {
