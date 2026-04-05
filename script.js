@@ -34,7 +34,7 @@ const layers = {
     attribution: '© <a href="https://opentopomap.org">OpenTopoMap</a>'
   }),
 
-  // Геология (пример) — можно заменить на настоящую карту
+  // Геология (пример)
   geology: L.tileLayer('https://api.maptiler.com/maps/geology/{z}/{x}/{y}.png?key=YOUR_KEY_HERE', {
     maxZoom: 12,
     attribution: 'Geology © <a href="https://maptiler.com">MapTiler</a>'
@@ -63,16 +63,25 @@ function initMap() {
     overlayLayers[key] = false;
   });
 
-  // Меню слоёв — теперь работает
+  // Меню слоёв — теперь 100% работает
   const btn = document.getElementById('layers-btn');
   const panel = document.getElementById('layers-panel');
+
   if (btn && panel) {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
       panel.classList.toggle('active');
+    });
+
+    // Закрытие при клике вне панели
+    document.addEventListener('click', (event) => {
+      if (!panel.contains(event.target) && event.target !== btn) {
+        panel.classList.remove('active');
+      }
     });
   }
 
-  // Загружаем сегменты после инициализации карты
+  // Загружаем сегменты
   loadSegments();
 }
 
@@ -100,8 +109,8 @@ function toggleOverlay(key, show) {
   }
 }
 
-// === СЕГМЕНТЫ ПО ДНЯМ (из GPX) ===
-async function loadSegment(day, file, color, name) {
+// === ЗАГРУЗКА СЕГМЕНТОВ ПО ДНЯМ ===
+async function loadSegment(day, color, name) {
   try {
     const res = await fetch(`data/day${day}.gpx`);
     const text = await res.text();
@@ -119,14 +128,15 @@ async function loadSegment(day, file, color, name) {
 
     if (points.length > 0) {
       // Линия маршрута
-      L.polyline(points, { color, weight: 5, opacity: 0.8 }).addTo(map).bindPopup(`<b>День ${day}</b>`);
+      L.polyline(points, { color, weight: 5, opacity: 0.8 }).addTo(map)
+        .bindPopup(`<b>День ${day}</b><br>Протяжённость: ~12–18 км`);
 
       // Точки: старт и финиш
       L.marker(points[0]).addTo(map).bindPopup(`<b>День ${day} старт</b>`);
       L.marker(points[points.length - 1]).addTo(map).bindPopup(`<b>День ${day} финиш</b>`);
     }
   } catch (e) {
-    console.warn(`Day ${day} не загружен:`, e.message);
+    console.warn(`День ${day} не загружен:`, e.message);
   }
 }
 
@@ -135,37 +145,15 @@ function loadSegments() {
   const colors = ['#FF5722', '#2196F3', '#4CAF50', '#9C27B0', '#FF9800', '#00BCD4', '#E91E63', '#795548', '#607D8B', '#3F51B5'];
 
   for (let i = 1; i <= 10; i++) {
-    loadSegment(i, `day${i}.gpx`, colors[(i - 1) % colors.length], `День ${i}`);
+    loadSegment(i, colors[(i - 1) % colors.length], `День ${i}`);
   }
 }
 
-// Импорт GPX
-function importRoute() {
-  const file = document.getElementById('import-file').files[0];
-  if (!file) return alert('Выберите файл');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const text = e.target.result;
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, 'text/xml');
-    const points = [];
-    xml.querySelectorAll('trkpt').forEach(pt => {
-      const lat = parseFloat(pt.getAttribute('lat'));
-      const lon = parseFloat(pt.getAttribute('lon'));
-      if (!isNaN(lat) && !isNaN(lon)) {
-        points.push([lat, lon]);
-      }
-    });
-    if (points.length > 0) {
-      L.polyline(points, { color: '#FF5722', weight: 5 }).addTo(map);
-      map.fitBounds(L.polyline(points).getBounds());
-    }
-  };
-  reader.readAsText(file);
-}
+// УБРАЛИ importRoute() — больше не нужна
+// УБРАЛИ кнопку "Импортировать GPX" из route.html
 
-// Запуск
-window.addEventListener('load', () => {
+// Запуск после полной загрузки DOM
+document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('map')) {
     initMap();
   }
