@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Маршрут по Хибинам</title>
   
-  <!-- КРИТИЧНО: Leaflet CSS -->
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- Твой стиль -->
@@ -17,29 +17,28 @@
 <body class="map-page">
   <header>
     <div class="container">
-      <a href="index.html" class="back-link">← Назад на главную</a>
-      <h1>🗺️ Мой маршрут по Хибинам</h1>
+      <a href="index.html" class="back-link">← Назад</a>
+      <h1>🗺️ Маршрут по Хибинам: 120 км</h1>
     </div>
   </header>
 
   <main>
     <div class="controls">
-  <button id="layers-btn">🔧 Меню выбора слоёв</button>
-  <div id="layers-panel" class="layers-panel">
-    <h4>Основные подложки</h4>
-    <button onclick="setBaseLayer('openstreetmap')">OSM</button>
-    <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
-    <button onclick="setBaseLayer('yandexMap')">Яндекс.Карта</button>
-    <button onclick="setBaseLayer('yandexSatellite')">Яндекс.Спутник</button>
+      <button id="layers-btn">🔧 Меню выбора слоёв</button>
+      <div id="layers-panel" class="layers-panel">
+        <h4>Основные подложки</h4>
+        <button onclick="setBaseLayer('openstreetmap')">OSM</button>
+        <button onclick="setBaseLayer('googleSatellite')">Google Спутник</button>
+        <button onclick="setBaseLayer('yandexMap')">Яндекс.Карта</button>
+        <button onclick="setBaseLayer('yandexSatellite')">Яндекс.Спутник</button>
 
-    <h4>Слои поверх</h4>
-    <label><input type="checkbox" onchange="toggleOverlay('strava', this.checked)"> Strava Heatmap</label>
-    <label><input type="checkbox" onchange="toggleOverlay('topo250', this.checked)"> Топокарта 1:250k</label>
-    <label><input type="checkbox" onchange="toggleOverlay('geology', this.checked)"> Геологическая карта</label>
-    <label><input type="checkbox" onchange="toggleOverlay('dangerZones', this.checked)"> Опасные зоны</label>
-  </div>
-</div>
-
+        <h4>Дополнительные слои</h4>
+        <label><input type="checkbox" onchange="toggleOverlay('strava', this.checked)"> Strava Heatmap</label>
+        <label><input type="checkbox" onchange="toggleOverlay('topo250', this.checked)"> Топокарта 1:250k</label>
+        <label><input type="checkbox" onchange="toggleOverlay('geology', this.checked)"> Геологическая карта</label>
+        <label><input type="checkbox" onchange="toggleOverlay('dangerZones', this.checked)"> Опасные зоны</label>
+      </div>
+    </div>
 
     <div id="map"></div>
 
@@ -49,34 +48,17 @@
       <a href="data/route.gpx" download class="btn-small">Скачать маршрут</a>
     </div>
 
-    <!-- О маршруте -->
+    <!-- Информация о маршруте -->
     <section class="guide-info">
       <div class="container">
         <h2>📌 О маршруте</h2>
         <ul>
           <li><strong>Протяжённость:</strong> 120 км</li>
-          <li><strong>Сложность:</strong> высокая (опыт пеших походов обязателен)</li>
-          <li><strong>Сезон:</strong> июль – первая декада сентября</li>
+          <li><strong>Сложность:</strong> высокая</li>
+          <li><strong>Сезон:</strong> июль – сентябрь</li>
           <li><strong>Время прохождения:</strong> 7–9 дней</li>
           <li><strong>Точка старта:</strong> Кировск, поворот на Актру</li>
-          <li><strong>Точка финиша:</strong> Кировск (замкнутый маршрут)</li>
-          <li><strong>Навигация:</strong> обязательно использовать GPS и GPX-трек</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Рекомендации -->
-    <section class="guide-tips">
-      <div class="container">
-        <h2>⚠️ Важные рекомендации</h2>
-        <ul>
-          <li>Не ходите в одиночку — только группой.</li>
-          <li>Проверяйте погоду перед выходом. В Хибинах погода меняется быстро.</li>
-          <li>Возьмите запасную одежду и термос с горячим чаем.</li>
-          <li>Не разводите костры — в тундре это запрещено и опасно.</li>
-          <li>Уважайте природу: не мусорьте, не тревожьте животных.</li>
-          <li>Местные саамы считают эти места священными — ведите себя скромно.</li>
-          <li>Имейте при себе аптечку, спутниковый маяк (например, Garmin inReach).</li>
+          <li><strong>Точка финиша:</strong> Кировск</li>
         </ul>
       </div>
     </section>
@@ -87,13 +69,11 @@
         <h2>🎒 Что взять с собой</h2>
         <ul>
           <li>Треккинговые ботинки (водонепроницаемые)</li>
-          <li>Лёгкая палатка или спальник-коврик (вес до 3 кг)</li>
-          <li>GPS-устройство или смартфон с офлайн-картами (OsmAnd, MAPS.ME)</li>
-          <li>Запас еды на 10 дней (сушёные продукты, энергетики)</li>
-          <li>Фильтр для воды (например, Sawyer Mini)</li>
+          <li>Лёгкая палатка или спальник-коврик</li>
+          <li>GPS-устройство или смартфон с офлайн-картами</li>
+          <li>Запас еды на 10 дней</li>
+          <li>Фильтр для воды</li>
           <li>Треккинговые палки</li>
-          <li>Фонарь, Power Bank</li>
-          <li>Карта и компас (на всякий случай)</li>
           <li>Дождевик и тёплая ветровка</li>
         </ul>
       </div>
@@ -104,24 +84,9 @@
       <div class="container">
         <h2>📥 Файлы для скачивания</h2>
         <ul class="file-list">
-          <li>
-            <a href="data/route.gpx" download>
-              📥 route.gpx
-            </a>
-            <span>— трек маршрута (подходит для OsmAnd, Locus, Garmin)</span>
-          </li>
-          <li>
-            <a href="data/route.kml" download>
-              📥 route.kml
-            </a>
-            <span>— для Google Earth и других сервисов</span>
-          </li>
-          <li>
-            <a href="https://nakarte.me/#m=11/67.75355/33.53954&l=Co/B&nktl=tU0pjtmge4bE8EV8Ae8N3A" target="_blank">
-              🔗 Открыть в nakarte.me
-            </a>
-            <span>— интерактивная карта с треком</span>
-          </li>
+          <li><a href="data/route.gpx" download>📥 route.gpx</a> — трек маршрута</li>
+          <li><a href="data/route.kml" download>📥 route.kml</a> — для Google Earth</li>
+          <li><a href="https://nakarte.me/#m=11/67.75355/33.53954&l=Co/B&nktl=tU0pjtmge4bE8EV8Ae8N3A" target="_blank">🔗 Открыть в nakarte.me</a></li>
         </ul>
       </div>
     </section>
@@ -129,7 +94,7 @@
 
   <footer>
     <div class="container">
-      &copy; 2026 | Данные: nakarte.me
+      &copy; 2026 | Данные: nakarte.me, OSM, Яндекс
     </div>
   </footer>
 
