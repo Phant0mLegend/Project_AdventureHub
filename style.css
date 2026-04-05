@@ -177,6 +177,61 @@ footer {
   margin-top: 40px;
 }
 
+/* Секции */
+.map-section, .guide-info, .guide-tips, .guide-gear, .guide-files {
+  padding: 40px 0;
+}
+
+#map {
+  height: 500px;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  border: 1px solid #33475c;
+  margin: 20px 0;
+}
+
+.controls {
+  text-align: center;
+  margin: 15px 0;
+}
+.controls button {
+  margin: 0 8px;
+  padding: 8px 16px;
+  background: #1a2a3a;
+  color: #80deea;
+  border: 1px solid #4fc3f7;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.controls button:hover {
+  background: #4fc3f7;
+  color: #0f1620;
+}
+
+.actions {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.file-list a {
+  font-weight: 600;
+  color: #80deea;
+}
+.file-list span {
+  font-size: 0.9em;
+  color: #aaa;
+  margin-left: 8px;
+}
+.file-list li {
+  margin: 15px 0;
+  padding: 12px;
+  background: #1a2a3a;
+  border-radius: 8px;
+  border-left: 4px solid #4fc3f7;
+}
+
+
 /* Адаптивность */
 @media (max-width: 768px) {
   header h1 { font-size: 1.8em; }
