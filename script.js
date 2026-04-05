@@ -1,116 +1,122 @@
+// Глобальные переменные
 let map;
 let currentLayer;
 
-// Подложки карт
+// Исправленные подложки
 const layers = {
+  // OpenStreetMap — работает всегда
   openstreetmap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }),
-  googleSatellite: L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
-    attribution: 'Google Satellite',
-    maxZoom: 19
+
+  // Google Спутник — стабильный URL
+  googleSatellite: L.tileLayer('http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}', {
+    maxZoom: 19,
+    attribution: 'Google Satellite'
   }),
+
+  // Яндекс.Карта
   yandexMap: L.tileLayer('https://vec0{s}.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&lang=ru_RU', {
     subdomains: ['1', '2', '3', '4'],
-    attribution: 'Данные &copy; <a href="https://yandex.ru">Яндекс</a>',
-    maxZoom: 19
+    maxZoom: 19,
+    attribution: 'Данные &copy; <a href="https://yandex.ru">Яндекс</a>'
   }),
+
+  // Яндекс.Спутник
   yandexSatellite: L.tileLayer('https://sat0{s}.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}&lang=ru_RU', {
     subdomains: ['1', '2', '3', '4'],
-    attribution: 'Снимки &copy; <a href="https://yandex.ru">Яндекс</a>',
-    maxZoom: 19
+    maxZoom: 19,
+    attribution: 'Снимки &copy; <a href="https://yandex.ru">Яндекс</a>'
   })
 };
 
+// Инициализация карты
 function initMap() {
-  map = L.map('map').setView([67.75355, 33.53954], 10);
+  map = L.map('map').setView([67.75, 33.54], 10);
+
+  // Стартовая подложка
   currentLayer = layers.openstreetmap;
   currentLayer.addTo(map);
 }
 
+// Смена слоя
 function setBaseLayer(key) {
-  if (currentLayer) map.removeLayer(currentLayer);
-  currentLayer = layers[key];
-  currentLayer.addTo(map);
+  const newLayer = layers[key];
+  if (newLayer && currentLayer !== newLayer) {
+    map.removeLayer(currentLayer);
+    currentLayer = newLayer;
+    currentLayer.addTo(map);
+  }
 }
 
-// === ЗАГРУЗКА GPX-ТРЕКА ===
-async function loadRoute(fileUrl) {
+// Загрузка GPX-файла
+async function loadGPX() {
   try {
-    const response = await fetch(fileUrl);
+    const response = await fetch('data/route.gpx');
     const text = await response.text();
     parseGPX(text);
   } catch (e) {
-    alert("Ошибка загрузки маршрута: " + e.message);
+    console.warn("GPX не загружен (возможно, файл отсутствует):", e.message);
   }
 }
 
+// Парсинг GPX
 function parseGPX(gpxText) {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(gpxText, "text/xml");
-
-  // === Линия маршрута ===
   const trackSegments = xmlDoc.querySelectorAll("trk > trkseg");
-  const routePoints = [];
 
   trackSegments.forEach(seg => {
-    const points = seg.querySelectorAll("trkpt");
-    const segmentLine = [];
-    points.forEach(pt => {
+    const points = [];
+    seg.querySelectorAll("trkpt").forEach(pt => {
       const lat = parseFloat(pt.getAttribute("lat"));
       const lon = parseFloat(pt.getAttribute("lon"));
-      segmentLine.push([lat, lon]);
+      if (!isNaN(lat) && !isNaN(lon)) {
+        points.push([lat, lon]);
+      }
     });
-    if (segmentLine.length > 0) {
-      routePoints.push(segmentLine);
+    if (points.length > 0) {
+      L.polyline(points, {
+        color: '#FF5722',
+        weight: 5,
+        opacity: 0.8
+      }).addTo(map);
     }
   });
 
-  // Рисуем маршрут
-  routePoints.forEach(line => {
-    L.polyline(line, {
-      color: '#FF5722',
-      weight: 5,
-      opacity: 0.8,
-      dashArray: '10, 10'
-    }).addTo(map);
-  });
-
-  // === Точки дней ===
-  const waypoints = xmlDoc.querySelectorAll("wpt");
-  waypoints.forEach(wpt => {
-    const lat = parseFloat(wpt.getAttribute("lat"));
-    const lon = parseFloat(wpt.getAttribute("lon"));
-    const name = wpt.querySelector("name").textContent;
-
-    L.marker([lat, lon], {
-      title: name
-    }).addTo(map).bindPopup(`
-      <b>📅 ${name}</b><br>
-      Начало или конец дня.
-    `);
-  });
+  // Центрируем карту по маршруту
+  if (trackSegments.length > 0) {
+    const firstPt = trackSegments[0].querySelector("trkpt");
+    if (firstPt) {
+      const lat = parseFloat(firstPt.getAttribute("lat"));
+      const lon = parseFloat(firstPt.getAttribute("lon"));
+      map.setView([lat, lon], 10);
+    }
+  }
 }
 
-// Импорт маршрута
+// Импорт GPX/KML
 function importRoute() {
   const fileInput = document.getElementById('import-file');
   const file = fileInput.files[0];
-  if (!file) {
-    alert("Выберите файл маршрута (.gpx)");
-    return;
-  }
+  if (!file) return alert("Выберите файл .gpx или .kml");
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    parseGPX(e.target.result);
+    const text = e.target.result;
+    if (file.name.endsWith('.gpx')) {
+      parseGPX(text);
+    } else {
+      alert("KML пока не поддерживается в браузере напрямую. Используйте GPX.");
+    }
   };
   reader.readAsText(file);
 }
 
-// Запуск
+// Запуск при загрузке
 window.addEventListener('load', () => {
-  initMap();
-  // Загружаем GPX с сервера (если он лежит в папке data)
-  loadRoute('data/route.gpx');
+  if (document.getElementById('map')) {
+    initMap();     // Создаём карту
+    loadGPX();      // Загружаем маршрут
+  }
 });
