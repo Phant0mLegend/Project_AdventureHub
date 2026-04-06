@@ -2,6 +2,7 @@
 let map;
 let currentLayer;
 let overlayLayers = {};
+let ymap;
 
 // === СЛОИ КАРТЫ ===
 const layers = {
