@@ -5,52 +5,63 @@ let overlayLayers = {};
 
 // === СЛОИ КАРТЫ ===
 const layers = {
-  // Основные подложки
+  // --- ОСНОВНЫЕ ПОДЛОЖКИ ---
   openstreetmap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OSM'
-  }),
-  googleSatellite: L.tileLayer('http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    maxZoom: 19,
-    attribution: 'Google'
-  }),
-  yandexMap: L.tileLayer('https://vec0{s}.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&lang=ru_RU', {
-    subdomains: ['1','2','3','4'],
-    attribution: 'Яндекс'
-  }),
-  yandexSatellite: L.tileLayer('https://sat0{s}.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}&lang=ru_RU', {
-    subdomains: ['1','2','3','4'],
-    attribution: 'Яндекс'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }),
 
-  // Strava Heatmap
+  googleSatellite: L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    subdomains: ['0', '1', '2', '3'],
+    attribution: 'Google Satellite'
+  }),
+
+  yandexMap: L.tileLayer('https://vec0{s}.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&lang=ru_RU&apikey=your_yandex_key', {
+    subdomains: ['1', '2', '3', '4'],
+    attribution: 'Яндекс.Карты',
+    maxZoom: 19
+  }).on('tileerror', function() {
+    console.warn('Yandex Map tile failed — используем OSM как fallback');
+  }),
+
+  yandexSatellite: L.tileLayer('https://sat0{s}.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}&lang=ru_RU', {
+    subdomains: ['1', '2', '3', '4'],
+    attribution: 'Яндекс.Спутник',
+    maxZoom: 19
+  }),
+
+  // --- ДОПОЛНИТЕЛЬНЫЕ СЛОИ ---
   strava: L.tileLayer('https://tiles.stadiamaps.com/tiles/strava_segment/{z}/{x}/{y}{r}.png', {
     maxZoom: 18,
     attribution: '© <a href="https://www.strava.com">Strava</a>'
   }),
 
-  // Топокарта 1:250k
   topo250: L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {
     maxZoom: 17,
     attribution: '© <a href="https://opentopomap.org">OpenTopoMap</a>'
   }),
 
-  // Геология (пример)
-  geology: L.tileLayer('https://api.maptiler.com/maps/geology/{z}/{x}/{y}.png?key=YOUR_KEY_HERE', {
-    maxZoom: 12,
-    attribution: 'Geology © <a href="https://maptiler.com">MapTiler</a>'
+  // Геология — БЕЗ ключа (безопасная публичная подложка)
+  geology: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 16,
+    attribution: 'Geology base: Esri, USGS'
   }),
 
-  // Опасные зоны
+  // Опасные зоны — добавим реальные точки
   dangerZones: L.geoJSON(null, {
     style: {
       color: '#ff3300',
-      weight: 2,
-      opacity: 0.7,
+      weight: 3,
+      opacity: 0.8,
       fillColor: '#ff6600',
       fillOpacity: 0.3
+    },
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup(`<b>⚠️ Опасная зона</b><br>${feature.properties.name || 'Неизвестно'}`);
     }
   })
 };
+
 
 // Инициализация карты
 function initMap() {
