@@ -58,25 +58,41 @@ function initMap() {
   currentLayer = layers.openstreetmap;
   currentLayer.addTo(map);
 
+  // Инициализация оверлеев
   Object.keys(layers).forEach(key => {
     overlayLayers[key] = false;
   });
 
-  const btn = document.getElementById('layers-btn');
-  const panel = document.getElementById('layers-panel');
+  // === Создаём кнопку как Leaflet-контрол ===
+  const controlButton = L.control({ position: 'topright' });
 
-  if (btn && panel) {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
+  controlButton.onAdd = function() {
+    const div = L.DomUtil.create('div', 'leaflet-bar');
+    div.innerHTML = '<button class="layers-control-button" id="layers-control-btn" title="Меню слоёв">🔧</button>';
+    
+    // Обработчик клика
+    div.firstChild.onclick = () => {
+      const panel = document.getElementById('layers-panel');
       panel.classList.toggle('active');
-    });
+    };
 
-    document.addEventListener('click', (event) => {
-      if (!panel.contains(event.target) && event.target !== btn) {
-        panel.classList.remove('active');
-      }
-    });
-  }
+    return div;
+  };
+
+  controlButton.addTo(map);
+
+  // Закрытие панели при клике вне
+  document.addEventListener('click', (event) => {
+    const panel = document.getElementById('layers-panel');
+    const btn = document.getElementById('layers-control-btn');
+    if (!panel.contains(event.target) && event.target !== btn) {
+      panel.classList.remove('active');
+    }
+  });
+
+  loadSegments();
+}
+
 
   loadSegments();
 }
