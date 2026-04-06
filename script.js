@@ -106,6 +106,24 @@ function setBaseLayer(key) {
   }
 }
 
+function initYandexMap() {
+  if (typeof ymaps !== 'undefined' && !ymap) {
+    ymaps.ready(() => {
+      ymap = new ymaps.Map('yandex-map', {
+        center: [67.75, 33.54],
+        zoom: 10,
+        controls: ['zoomControl', 'fullscreenControl']
+      });
+
+      // Пример: добавим метку старта
+      ymap.geoObjects.add(new ymaps.Placemark([67.75, 33.54], {
+        hintContent: 'Старт маршрута',
+        balloonContent: 'Добро пожаловать в Хибины!'
+      }));
+    });
+  }
+}
+
 // Вкл/выкл оверлеи
 function toggleOverlay(key, show) {
   if (show) {
