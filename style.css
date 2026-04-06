@@ -144,7 +144,8 @@ header p {
   margin: 15px 0;
 }
 .controls button {
-  margin: 0 8px;
+  display: block;
+  margin: 8px auto;
   padding: 8px 16px;
   background: #1a2a3a;
   color: #80deea;
@@ -152,11 +153,16 @@ header p {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
+  font-size: 0.95em;
+  width: 90%;
+  text-align: center;
 }
+
 .controls button:hover {
   background: #4fc3f7;
   color: #0f1620;
 }
+
 
 .actions {
   text-align: center;
