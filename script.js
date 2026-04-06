@@ -32,11 +32,12 @@ const layers = {
     attribution: '© OpenTopoMap'
   }),
 
-  geology: L.tileLayer('https://gsr.gugk.ru/tiles/gkm2500/{z}/{x}/{y}.png', {
-    maxZoom: 10,
-    minZoom: 4,
-    attribution: '© <a href="https://gsr.gugk.ru">ГСР Роскартографии</a>'
-  }),
+  geology: L.tileLayer('https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=6a15c823f6d94e048fe1901f9d35eb95', {
+  subdomains: ['a', 'b', 'c'],
+  maxZoom: 19,
+  attribution: '© <a href="https://www.thunderforest.com">Thunderforest</a> | Data: OSM'
+}),
+
 
   dangerZones: L.geoJSON(null, {
     style: {
