@@ -2,9 +2,9 @@
 let map;
 let currentLayer;
 let overlayLayers = {};
-let ymap; // Для Яндекс.Карты
+let ymap;
 
-// === СЛОИ КАРТЫ (только Leaflet-слои) ===
+// === СЛОИ КАРТЫ ===
 const layers = {
   openstreetmap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -12,12 +12,12 @@ const layers = {
 
   googleSatellite: L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     maxZoom: 20,
-    subdomains: ['0', '1', '2', '3'],
+    subdomains: ['0','1','2','3'],
     attribution: 'Google Satellite'
   }),
 
   yandexSatellite: L.tileLayer('https://sat0{s}.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}&lang=ru_RU', {
-    subdomains: ['1', '2', '3', '4'],
+    subdomains: ['1','2','3','4'],
     attribution: 'Яндекс.Спутник',
     maxZoom: 19
   }),
@@ -52,18 +52,16 @@ const layers = {
   })
 };
 
-// === ИНИЦИАЛИЗАЦИЯ LEAFLET КАРТЫ ===
+// Инициализация Leaflet
 function initMap() {
   map = L.map('map').setView([67.75, 33.54], 10);
   currentLayer = layers.openstreetmap;
   currentLayer.addTo(map);
 
-  // Инициализация оверлеев
   Object.keys(layers).forEach(key => {
     overlayLayers[key] = false;
   });
 
-  // Меню слоёв
   const btn = document.getElementById('layers-btn');
   const panel = document.getElementById('layers-panel');
 
@@ -83,15 +81,13 @@ function initMap() {
   loadSegments();
 }
 
-// === ПЕРЕКЛЮЧЕНИЕ СЛОЁВ ===
+// Переключение слоёв
 function setBaseLayer(key) {
   if (key === 'yandexMap') {
-    // Переключаемся на Яндекс.Карту
     document.getElementById('map').style.display = 'none';
     document.getElementById('yandex-map').style.display = 'block';
-    initYandexMap(); // Загружаем Яндекс
+    initYandexMap();
   } else {
-    // Возвращаемся к Leaflet
     document.getElementById('map').style.display = 'block';
     document.getElementById('yandex-map').style.display = 'none';
 
@@ -103,27 +99,90 @@ function setBaseLayer(key) {
   }
 }
 
-// === ИНИЦИАЛИЗАЦИЯ ЯНДЕКС.КАРТЫ ===
+// Инициализация Яндекс.Карты
 function initYandexMap() {
   if (typeof ymaps !== 'undefined' && !ymap) {
     ymaps.ready(() => {
       ymap = new ymaps.Map('yandex-map', {
         center: [67.75, 33.54],
         zoom: 10,
-        controls: ['zoomControl', 'fullscreenControl']
+        controls: []
       });
 
+      // Кнопка масштаба — внизу слева
+      ymap.controls.add(new ymaps.control.ZoomControl({
+        options: { position: { left: '15px', bottom: '50px' } }
+      }));
+
+      // Полноэкранный режим
+      ymap.controls.add('fullscreenControl', {
+        position: { top: '15px', right: '15px' }
+      });
+
+      // Метка старта
       ymap.geoObjects.add(new ymaps.Placemark([67.75, 33.54], {
         hintContent: 'Старт маршрута',
         balloonContent: '<b>Хибины</b><br>День 1: Кировск → Актру'
       }));
+
+      // Загружаем маршрут
+      loadYandexRoute();
     }).catch(e => {
       console.error("Ошибка загрузки Яндекс.Карты:", e);
     });
   }
 }
 
-// === ВКЛ/ВЫКЛ ОВЕРЛЕЕВ ===
+// Загрузка маршрута на Яндекс.Карте
+async function loadYandexRoute() {
+  if (!ymap) return;
+
+  const colors = ['#FF5722', '#2196F3', '#4CAF50', '#9C27B0', '#FF9800', '#00BCD4', '#E91E63', '#795548', '#607D8B', '#3F51B5'];
+
+  for (let i = 1; i <= 10; i++) {
+    try {
+      const res = await fetch(`data/day${i}.gpx`);
+      const text = await res.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'text/xml');
+      const points = [];
+
+      xml.querySelectorAll('trkpt').forEach(pt => {
+        const lat = parseFloat(pt.getAttribute('lat'));
+        const lon = parseFloat(pt.getAttribute('lon'));
+        if (!isNaN(lat) && !isNaN(lon)) {
+          points.push([lat, lon]);
+        }
+      });
+
+      if (points.length > 0) {
+        ymap.geoObjects.add(new ymaps.Polyline(points, {}, {
+          strokeColor: colors[(i - 1) % colors.length],
+          strokeWidth: 4,
+          opacity: 0.8
+        }));
+
+        ymap.geoObjects.add(new ymaps.Placemark(points[0], {
+          iconCaption: `День ${i} старт`,
+          balloonContent: `День ${i}: старт`
+        }, {
+          preset: 'islands#blueCircleDotIconWithCaption'
+        }));
+
+        ymap.geoObjects.add(new ymaps.Placemark(points[points.length - 1], {
+          iconCaption: `День ${i} финиш`,
+          balloonContent: `День ${i}: финиш`
+        }, {
+          preset: 'islands#redCircleDotIconWithCaption'
+        }));
+      }
+    } catch (e) {
+      console.warn(`День ${i} не загружен на Яндекс`, e.message);
+    }
+  }
+}
+
+// Вкл/выкл оверлеев
 function toggleOverlay(key, show) {
   if (show) {
     if (!overlayLayers[key]) {
@@ -141,7 +200,7 @@ function toggleOverlay(key, show) {
   }
 }
 
-// === ЗАГРУЗКА ОПАСНЫХ ЗОН ===
+// Опасные зоны
 function loadDangerZones() {
   const data = {
     "type": "FeatureCollection",
@@ -157,7 +216,7 @@ function loadDangerZones() {
   layers.dangerZones.addData(data);
 }
 
-// === ЗАГРУЗКА МАРШРУТОВ ПО ДНЯМ ===
+// Загрузка GPX по дням
 async function loadSegment(day, color) {
   try {
     const res = await fetch(`data/day${day}.gpx`);
@@ -192,7 +251,7 @@ function loadSegments() {
   }
 }
 
-// === ЗАПУСК ===
+// Запуск
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('map')) {
     initMap();
