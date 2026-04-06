@@ -198,15 +198,6 @@ footer {
   margin-top: 40px;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-  header h1 { font-size: 1.8em; }
-  .overlay h2 { font-size: 2em; }
-  .features .container { flex-direction: column; }
-  .controls, .actions { flex-wrap: wrap; }
-  input, button { margin: 5px; }
-}
-
 /* === КНОПКА И ПАНЕЛЬ ВНУТРИ КАРТЫ === */
 .layers-control-button {
   background: #4fc3f7;
@@ -280,4 +271,13 @@ footer {
 .layers-control-panel input {
   margin-right: 8px;
   transform: scale(1.1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  header h1 { font-size: 1.8em; }
+  .overlay h2 { font-size: 2em; }
+  .features .container { flex-direction: column; }
+  .controls, .actions { flex-wrap: wrap; }
+  input, button { margin: 5px; }
 }
