@@ -33,21 +33,22 @@
         <button onclick="setBaseLayer('yandexSatellite')">Яндекс.Спутник</button>
 
         <h4>Дополнительные слои</h4>
-        <label><input type="checkbox" onchange="toggleOverlay('strava', this.checked)"> Strava Heatmap</label>
+        <label><input type="checkbox" onchange="toggleOverlay('strava', this.checked)"> Рельеф и тропы</label>
         <label><input type="checkbox" onchange="toggleOverlay('topo250', this.checked)"> Топокарта 1:250k</label>
         <label><input type="checkbox" onchange="toggleOverlay('geology', this.checked)"> Геологическая карта</label>
         <label><input type="checkbox" onchange="toggleOverlay('dangerZones', this.checked)"> Опасные зоны</label>
       </div>
     </div>
 
-<div id="map" style="display: block;"></div>
+    <!-- Leaflet карта -->
+    <div id="map" style="display: block;"></div>
 
-<div id="yandex-map" style="display: none; height: 75vh; width: 90%; margin: 20px auto; border-radius: 12px;"></div>
-
+    <!-- Яндекс.Карта (скрыта по умолчанию) -->
+    <div id="yandex-map" style="display: none; height: 75vh; width: 90%; margin: 20px auto; border-radius: 12px;"></div>
 
     <div class="actions">
-  <a href="data/route.gpx" download class="btn-small">Скачать маршрут</a>
-</div>
+      <a href="data/route.gpx" download class="btn-small">Скачать маршрут</a>
+    </div>
 
     <!-- Информация о маршруте -->
     <section class="guide-info">
@@ -99,9 +100,14 @@
     </div>
   </footer>
 
-  <!-- Leaflet JS -->
+  <!-- Порядок скриптов — КРИТИЧЕН -->
+  <!-- 1. Leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="script.js"></script>
+
+  <!-- 2. Яндекс.Карты (должен быть ДО твоего script.js) -->
   <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=fb23df16-ba6f-4c30-922f-19e79b6b2446"></script>
+
+  <!-- 3. Твой скрипт -->
+  <script src="script.js"></script>
 </body>
 </html>
