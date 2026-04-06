@@ -93,10 +93,6 @@ function initMap() {
   loadSegments();
 }
 
-
-  loadSegments();
-}
-
 // Переключение слоёв
 function setBaseLayer(key) {
   if (key === 'yandexMap') {
